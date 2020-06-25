@@ -6,7 +6,7 @@ from django.db.models import Count, Q
 import json
 from django.http import JsonResponse
 from django.db.models.functions import Cast
-import pandas as pd
+
 
 
 
@@ -18,22 +18,7 @@ def home(request):
 def covid19_korea(request):
     return render(request, 'covid19_korea.html')
 
-    df = pd.read_csv('https://raw.githubusercontent.com/datasets/covid-19/master/data/countries-aggregated.csv',
-                     parse_dates=['Date'])
-    countries = ['Korea, South', 'Australia', 'Japan', 'Philippines', 'Thailand']
-    df = df[df['Country'].isin(countries)]
-    df['Cases'] = df[['Confirmed', 'Recovered', 'Deaths']].sum(axis=1)
-    df = df.pivot(index='Date', columns='Country', values='Cases')
-    countries = list(df.columns)
-    covid = df.reset_index('Date')
-    covid.set_index(['Date'], inplace=True)
-    covid.columns = countries
-    populations = {'Korea, South': 51269185, 'Australia': 25499884, 'Japan': 126476461,
-                   'Philippines': 109581078, 'Thailand': 69799978}
 
-    percapita = covid.copy()
-    for country in list(percapita.columns):
-        percapita[country] = percapita[country] / populations[country] * 1000000
 
 
 
